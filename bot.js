@@ -1,4 +1,5 @@
-var configuration = require('config.json');
+var configuration = require('./config.json');
+var commands = require('./commandList.json');
 var tmi = require('tmi.js');
 
 class Bot{
@@ -9,16 +10,23 @@ class Bot{
 		offline: "Offline",
 		error: "Error"
 	}
+	// Automod parameters
+	static Automod = {
+		off: "off",
+		warn: "warn",
+		strict: "strict"
+	}
+
+	// We want to use the configuration specified in our file
 	opts = configuration;
 
 	client = null;
+	messageEvent = null;
 
-	messageHandler = null;
-	eventHandler = null;
+	automod = this.Automod.off;
 
-	constructor(eventHandler, messageHandler){
-		this.messageHandler = messageHandler;
-		this.eventHandler = eventHandler;
+	constructor(messageEvent = null){
+		this.messageEvent = messageEvent;
 
 		this.onMessageHandler = this.onMessageHandler.bind(this);
 		this.onConnectedHandler = this.onConnectedHandler.bind(this);
@@ -28,43 +36,60 @@ class Bot{
 		this.client.on('connected', this.onConnectedHandler);
 	}
 
+	// Connect the bot to the chat
 	connectToTwitch(){
 		this.client.connect().catch(this.botError);
-		this.eventHandler(Bot.BotStatus.connected);
 	}
 
 	botError(){
-		this.eventHandler(Bot.BotStatus.error);
 	}
 
+	// This is the entrypoint for the message handling system
+	// Should only contain a switch statement
 	onMessageHandler (target, context, msg, self) {
 		if (self) { return; } // Ignore messages from the bot
 
-		if(this.messageHandler){
-			this.messageHandler(context, msg);
+		if(this.messageEvent){
+			this.messageEvent(context, msg);
 		}
-
 		// Remove whitespace from chat message
 		const commandName = msg.trim();
 
-		// If the command is known, let's execute it
-		switch(commandName){
-			case '!hello':
-				this.client.say(target, 'Hey there!')
-				break;
-			case '!whoami':
-				this.client.say(target, 'I am Fridge Theorem!')
-				break;
-			case '!fridgetheorem':
-				this.client.say(target, 
-					'The fridge theorem is a corollary of di\'s lemma, which states: if you own a refrigerator, and it\'s running, you\'d better go catch it')
-				break;
-			case '!help':
-				this.client.say(target,
-					"The supported commands are: !hello, !whoami, !fridgetheorem")
-				break;
-			default:
-				break;
+		if(commandName[0] == "!"){
+			// This is just text
+
+			// need to abide by automod
+			if(this.automod == Automod.off) return;
+
+			// automod is on, so we need to pass it off to a mod handler
+
+
+			return;
+		}
+
+		// Perform a search for the command
+		// We substring to get rid of exclamation
+		var trimmedCommand = commandName.substring(1);
+
+		var equalityFunction = (x) => x == trimmedCommand
+		// If it exists, it's in one of 3 lists
+		var isBasic = commands.BasicCommands.hasOwnProperty(equalityFunction);
+		var isComplex = commands.ComplexCommands.hasOwnProperty(equalityFunction);
+		var isUtility = commands.UtilityCommands.hasOwnProperty(equalityFunction);
+
+		if(isBasic){
+			// Just print
+			this.client.say(target,commands.BasicCommands[trimmedCommand]);
+		}
+		else if(isComplex){
+			// NOT IMPLEMENTED		
+		}
+		else if(isUtility){
+			// NOT IMPLEMENTED	
+		}
+		else{
+			// Handle
+			console.log("Unsupported Command");
 		}
 	}
 
@@ -73,5 +98,9 @@ class Bot{
 	}
 
 
+	moderate(){
+	}
+
 }
-export default Bot;
+
+module.exports = Bot;

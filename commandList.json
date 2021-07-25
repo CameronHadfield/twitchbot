@@ -1,0 +1,20 @@
+{
+    "BasicCommands":{
+        "whoami":"I am Fridge Theorem!",
+        "hello":"Hey there!",
+        "fridgetheorem":"The fridge theorem is a corollary of di's lemma, which states: if you own a refrigerator, and it's running, you'd better go catch it"
+    },
+    "ComplexCommands":{
+        "":{}
+    },
+    "UtilityCommands":{
+        "help":{
+
+        }
+    },
+    "CommandLine":{
+        "help":"Bring up this page",
+        "connect": "Connect a bot instance to twitch",
+        "status": "Returns the connection status"
+    }
+}
