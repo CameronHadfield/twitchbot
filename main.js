@@ -1,5 +1,6 @@
 var bot = require("./bot.js");
 var readline = require("readline");
+var cli = require("./clihandler.js");
 
 const rl = readline.createInterface({
     input:process.stdin,
@@ -7,50 +8,24 @@ const rl = readline.createInterface({
 });
 
 var botInstance = new bot();
+var cliInstance = new cli(botInstance);
+
 mainLoop();
 
-function mainLoop(){
+// Functions
 
-    var exit = false;
+function mainLoop(){
     getInput();
 }
 
 function getInput(){
-
-        rl.question("Please enter a command: ", (answer)=>{
-            if(answer == "exit"){
-                exit = true;
-
-                console.log("Exiting...");
-                rl.close();
-            }
-            commandHandler(answer);
-            getInput();
-        });
-
-}
-
-function commandHandler(command){
-    var fixedCommand = command.toLowerCase();
-    var commandList = fixedCommand.split(" ");
-
-    if(commandList.length == 0) return;
-
-    switch(commandList[0]){
-        case "help":
-            break;
-        case "connect":
-            connectToTwitch();
-            break;
-        case "automod":
-            if(commandList.length == 1){
-                // Default to strict mode
-            }
-        default:
-            break;
-    }
-}
-function connectToTwitch(){
-    botInstance.connectToTwitch();
-    console.log("Connected to twitch");
+    rl.question("Please enter a command: ", (answer)=>{
+        if(answer == "exit"){
+            console.log("Exiting...");
+            rl.close();
+            return;
+        }
+        cliInstance.commandTriage(answer);
+        getInput();
+    });
 }

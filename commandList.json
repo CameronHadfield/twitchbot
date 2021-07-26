@@ -13,8 +13,36 @@
         }
     },
     "CommandLine":{
-        "help":"Bring up this page",
-        "connect": "Connect a bot instance to twitch",
-        "status": "Returns the connection status"
+        "help":{
+           "usage":"help [command]",
+           "manual":"View this help page"
+        },
+        "connect": {
+            "usage":"connect",
+            "manual":"Connect the bot to Twitch chat"
+        },
+        "status": {
+            "usage":"status",
+            "manual":"View the bot's status"
+        },
+        "automod":{
+            "usage":"automod [POLICY]",
+            "manual":"Activate the automod using any of warn, strict or off, defaults to strict"
+        },
+        "autoprompt": {
+            "usage":"autoprompt timer [...msg]",
+            "manual":"Sets autoprompter at an interval of [timer] seconds with optional message"
+        },
+        "say":{
+            "usage":"say list of words",
+            "manual":"Make the bot say something in the chat"
+        },
+        "blacklist":{
+            "usage":"blacklist add/remove msg",
+            "manual":"Blacklist manager, adds or removes keys from the blacklist, please note that it only consumes single words"
+        }
+    },
+    "CannedMessages":{
+        "welcome": "Welcome to the chat whether you're new or you've been here since the beginning! Thanks for being here :)"
     }
 }
