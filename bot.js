@@ -1,8 +1,10 @@
 var configuration = require('./config.json');
+var bots = require('./knownbots.json');
 var commands = require('./commandList.json');
 var tmi = require('tmi.js');
 const { stat } = require('fs');
 var fs = require('fs');
+
 
 class Bot{
 	// connection options
@@ -42,15 +44,22 @@ class Bot{
 
 		this.onMessageHandler = this.onMessageHandler.bind(this);
 		this.onConnectedHandler = this.onConnectedHandler.bind(this);
+		this.onUserJoinHandler = this.onUserJoinHandler.bind(this);
 
 		this.client = new tmi.Client(this.opts);
 		this.client.on('message', this.onMessageHandler);
 		this.client.on('connected', this.onConnectedHandler);
+		this.client.on('join', this.onUserJoinHandler);
+
+		this.reloadBlacklist(); // get initial load
 	}
 
 	// Connect the bot to the chat
 	connectToTwitch(){
 		this.client.connect().catch(this.botError);
+	}
+	disconnectFromTwitch(){
+		this.client.disconnect().catch(this.botError);
 	}
 
 	botError(){
@@ -154,7 +163,12 @@ class Bot{
 	getStatus(){
 
 	}
+	onUserJoinHandler(channel, username){
+		if(username == this.client.username) return;
+		if(bots[username] != undefined) return; // want to make sure it isn't a known bot
 
+		this.client.say(this.opts.channels[0],`Hey there ${username}, love having you here :)`)
+	}
 }
 
 module.exports = Bot;

@@ -1,6 +1,7 @@
 var bot = require("./bot.js");
 var readline = require("readline");
 var cli = require("./clihandler.js");
+var terminalmanager = require("./terminalmanager.js");
 
 const rl = readline.createInterface({
     input:process.stdin,
@@ -9,13 +10,15 @@ const rl = readline.createInterface({
 
 var botInstance = new bot();
 var cliInstance = new cli(botInstance);
+var terminalManager = new terminalmanager(botInstance, cliInstance);
 
 mainLoop();
 
 // Functions
 
 function mainLoop(){
-    getInput();
+    // now handled by the terminalmanager
+    //getInput();
 }
 
 function getInput(){
