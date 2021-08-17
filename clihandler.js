@@ -80,6 +80,8 @@ class CliHandler {
                         throw exceptions.BadUsage;
                     }
                     break;
+                case "disconnect":
+                    this.botReference.disconnectFromTwitch(); 
                 default:
                     throw exceptions.CommandNotFound;
                     break;
@@ -109,9 +111,11 @@ class CliHandler {
             this.botReference.say(msg);
             this.sayHelper(timer,msg);
         }, timer*1000);
+    }
+    cancelAllAutoprompts(){
 
     }
-
+//#region Blacklist
     addToBlacklist(msg){
         fs.readFile('./wordblacklist.json', 'utf-8', (err, data)=>{
             if(err){
@@ -141,6 +145,7 @@ class CliHandler {
             this.botReference.reloadBlacklist();
         });
     }
+//#endregion
 	getHelpPage(command){
 		var commandObj = commands.CommandLine[command];
 		console.log(`\nHELP ${command}\nusage: ${commandObj.usage}\nWhat does it do?:${commandObj.manual}`);
